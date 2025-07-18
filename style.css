@@ -1,0 +1,23 @@
+table tr {
+    height: 2rem;
+}
+
+.message-box{ 
+    position:absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10;
+    width: 40%;
+    background-color: #ff6550;
+    border: 1px solid #ff6550;
+    border-radius: 16px;
+    opacity: 0;
+    animation: ani 3s forwards;
+    color: #ffffff;
+}
+
+@keyframes ani {
+    0% {opacity: 0;}
+    50% {opacity: 1;}
+    100% {opacity: 0;}
+  }

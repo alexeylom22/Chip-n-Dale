@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Splitter</title>
+    
+</head>
+<body>
+    <div class="container">
+
+        <div class="row mt-3">
+            <div class="col text-center">
+                <div class="btn-group btn-group-sm" role="group" aria-label="Large button group">
+                    <a href="index.html" type="button" class="btn btn-outline-primary">Randomize</a>
+                    <a href="" type="button" class="btn btn-primary disabled">Splitter</a>
+                    <a href="watermark.html" type="button" class="btn btn-outline-primary">Watermark</a>
+                    <a href="main.html" type="button" class="btn btn-outline-primary">Tata Prices</a>
+                    <a href="analyze.html" type="button" class="btn btn-outline-primary"><span class="badge bg-secondary">β</span>GenerAnal </a>
+                  </div>
+            </div>
+        </div>
+
+        <h1>Split numbers for MDR</h1>
+        <div class="row">
+            <div class="col-6">
+                <textarea name="" rows="15" id="original" oninput="changeFoo()" class='form-control'></textarea>
+            </div>
+            <div class="col-6">
+                <textarea name="" rows="15"  id="result" class='form-control'></textarea>
+                <p id="count" class="text-muted">0</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <textarea name="" rows="4" oninput="changeSymbolFoo()" id="symbol_textarea" class='form-control'></textarea>
+                <p id="symbol_count" class="text-muted">0</p>
+            </div>
+        </div>    
+    </div>
+    <script>
+        function changeSymbolFoo() {
+            document.getElementById("symbol_count").innerText = document.getElementById("symbol_textarea").value.length;
+        }
+        
+        function changeFoo() {
+            document.getElementById("result").innerText = document.getElementById("original").value.replace(/\n/g,',');
+            document.getElementById("count").innerText = document.getElementById("result").value.split(',').length;
+        }
+    </script>
+</body>
+</html>
