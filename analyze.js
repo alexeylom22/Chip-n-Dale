@@ -10,7 +10,7 @@ var DATE_OPTIONS = {
     second: 'numeric'
   };
   
-var DELIVERY_DELAY = 3; // 
+var DELIVERY_DELAY = 1; // 
 
 
 // UTILITY Arrays
