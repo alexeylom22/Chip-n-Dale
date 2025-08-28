@@ -118,7 +118,7 @@
                 cell3.innerHTML = MNC;
                 cell4.innerHTML = Price;
 
-                var object_row = new CSVRow(MCC, MNC, Price);
+                var object_row = new CSVRow(parseInt(MCC), parseInt(MNC), Price);
                 GLOBAL_DATA.push(object_row);
 
             } else {
@@ -136,7 +136,7 @@
                     cell2.innerHTML = MCC;
                     cell3.innerHTML = MNC;
                     cell4.innerHTML = Price;
-                    var object_row = new CSVRow(MCC, MNC, Price);
+                    var object_row = new CSVRow(parseInt(MCC), parseInt(MNC), Price);
                     GLOBAL_DATA.push(object_row);
 
                 }
