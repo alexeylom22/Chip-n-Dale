@@ -227,12 +227,12 @@
                             });
 
                             if (MCC.split(GroupSeparator).length == 1){
-                                if (WRONG_MCC.includes(MCC)) continue;
+                                if (WRONG_MCC.includes(parseInt(MCC))) continue;
                                 setMNC(table, i+1, MCC, MNC, Price, GroupSeparator);
                             } else {
                                 var temp_array = MCC.split(",");
                                 for ( el in temp_array){
-                                    if (WRONG_MCC.includes(temp_array[el])) continue;
+                                    if (WRONG_MCC.includes(parseInt(temp_array[el]))) continue;
                                     setMNC(table, i+1, temp_array[el], MNC, Price, GroupSeparator);
                                 }
                             }
