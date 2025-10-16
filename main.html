@@ -96,6 +96,7 @@
     <script>
         var GLOBAL_DATA = [];
         var SYMBOLS_LIST = [",", ";"];
+        var WRONG_MCC = [441];
 
         class CSVRow{
             constructor(mcc, mnc, price){
@@ -226,10 +227,12 @@
                             });
 
                             if (MCC.split(GroupSeparator).length == 1){
+                                if (WRONG_MCC.include(MCC)) continue;
                                 setMNC(table, i+1, MCC, MNC, Price, GroupSeparator);
                             } else {
                                 var temp_array = MCC.split(",");
                                 for ( el in temp_array){
+                                    if (WRONG_MCC.include(temp_array[el])) continue;
                                     setMNC(table, i+1, temp_array[el], MNC, Price, GroupSeparator);
                                 }
                             }
