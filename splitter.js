@@ -49,6 +49,18 @@ function highlightNonGSM(text) {
 }
 
 document.addEventListener('DOMContentLoaded', function(){ 
+    let spamRegexList = [];
+    let casinoRegexList = [];
+    fetch('regexData.json')
+      .then(response => response.json())
+      .then(data => {
+        spamRegexList = data.spam.map(r => new RegExp(r, 'i'));
+        casinoRegexList = data.casino.map(r => new RegExp(r, 'i'));
+      })
+      .catch(err => {
+        document.getElementById('results').innerHTML = `<p class="nomatch">Upload error regexData.json</p>`;
+        console.error(err);
+      });
 
     document.getElementById('smsInput').addEventListener('input', function () {
 
@@ -57,8 +69,28 @@ document.addEventListener('DOMContentLoaded', function(){
         const highlighted = highlightNonGSM(text);
         var output_text = text;
 
+        var filtered;
+
+        let matches = [];
+
+        spamRegexList.forEach((regex) => {
+            if (regex.test(text)) matches.push({ category: 'spam', regex: regex });
+        });
+
+        casinoRegexList.forEach((regex) => {
+            if (regex.test(text)) matches.push({ category: 'casino', regex: regex });
+        });
+
+        if (matches.length > 0) {
+            filtered = `
+                ${matches.map(m => `<b>${m.category.toUpperCase()}</b> → <code>${m.regex}</code>`).join('<br>')}`;
+        } else {
+            filtered = `<span>Not found</span>`;
+        }    
+
         document.getElementById('output').innerHTML = `
             <div class="alert alert-${result.parts > 1 ? 'warning' : 'success'}">
+            <strong>Filter sets:</strong> ${filtered}<br>
             <strong>Encoding:</strong> ${result.encoding}<br>
             <strong>Total characters:</strong> ${text.length}<br>
             <strong>Total bytes:</strong> ${result.byteLength}<br>
