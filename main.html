@@ -9,6 +9,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="priceparsing.js"></script>
     <title>Price parsing</title>
 </head>
 <body>
@@ -63,6 +64,9 @@
                                 <tr><td colspan="4">...</td></tr>
                               </tbody>
                         </table>
+                        <hr/>
+                        <label for="fileInput" class="form-label">Select <b>CSV</b> file:</label>
+                        <input class="form-control" type="file" id="fileInput" accept=".csv">
                     </div>
                   </div>
                 </div>
@@ -71,8 +75,12 @@
         </div>
 
         <div class="row mt-3">
-            <label for="fileInput" class="form-label">Select <b>CSV</b> file:</label>
-            <input class="form-control" type="file" id="fileInput" accept=".csv">
+            <div class="my-2 text-center" id="input_group">
+                <textarea id="inputText" class="form-control" placeholder="Встав сюди текст..."></textarea>
+                <br>
+                <button id="pasteButton" class="btn btn-outline-primary">Generate</button>
+            </div>
+            
 
             <div class="row my-4" id="append_btn"></div>
 
@@ -92,159 +100,5 @@
              
         </div>
     </div>
-
-    <script>
-        var GLOBAL_DATA = [];
-        var SYMBOLS_LIST = [",", ";"];
-        var WRONG_MCC = [441];
-
-        class CSVRow{
-            constructor(mcc, mnc, price){
-                this.MCC = mcc;
-                this.MNC = mnc;
-                this.Price = price;
-            }
-        }
-
-        function setMNC(table, order, MCC, MNC, Price, groupSeparator){
-            if (MNC.split(groupSeparator).length == 1){
-                var row = table.insertRow(-1);
-                var cell1 = row.insertCell(0);
-                var cell2 = row.insertCell(1);
-                var cell3 = row.insertCell(2);
-                var cell4 = row.insertCell(3);
-
-                cell1.innerHTML = order;
-                cell2.innerHTML = MCC;
-                cell3.innerHTML = MNC;
-                cell4.innerHTML = Price;
-
-                var object_row = new CSVRow(parseInt(MCC), parseInt(MNC), Price);
-                GLOBAL_DATA.push(object_row);
-
-            } else {
-                var temp_array = MNC.split(groupSeparator);
-                console.log(temp_array);
-                for ( el in temp_array){
-                    MNC = parseInt(temp_array[el]);
-                    var row = table.insertRow(-1);
-                    var cell1 = row.insertCell(0);
-                    var cell2 = row.insertCell(1);
-                    var cell3 = row.insertCell(2);
-                    var cell4 = row.insertCell(3);
-
-                    cell1.innerHTML = order;
-                    cell2.innerHTML = MCC;
-                    cell3.innerHTML = MNC;
-                    cell4.innerHTML = Price;
-                    var object_row = new CSVRow(parseInt(MCC), parseInt(MNC), Price);
-                    GLOBAL_DATA.push(object_row);
-
-                }
-            }
-        }
-
-        function generateFile(){
-
-            console.log("Generating file...");
-            const titleKeys = Object.keys(GLOBAL_DATA[0])
-
-            const refinedData = []
-
-            refinedData.push(titleKeys)
-
-            GLOBAL_DATA.forEach(item => {
-            refinedData.push(Object.values(item))  
-            })
-
-            let csvContent = ''
-            
-            refinedData.forEach(row => {
-                csvContent += row.join(',') + '\n'
-            })
-
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8,' })
-            const objUrl = URL.createObjectURL(blob)
-            const link = document.createElement('a')
-            link.setAttribute('href', objUrl)
-            link.setAttribute('class', "btn btn-success");
-
-            // Time
-            var currentdate = new Date(); 
-            var datetime = currentdate.getHours() + ""  
-                + currentdate.getMinutes() + "" 
-                + currentdate.getSeconds() + ""
-                +  currentdate.getDate() + ""
-                + (currentdate.getMonth()+1)  + "" 
-                + currentdate.getFullYear() + "";
-            // Time end
-
-            var utc = new Date().toJSON().slice(0,10).replace(/-/g,'/');
-            link.setAttribute('download', 'price_'+ datetime +'.csv')
-            link.textContent = 'Click to Download'
-
-            document.getElementById("append_btn").append(link)
-        }
-
-        document.getElementById('fileInput').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                Papa.parse(file, {
-                    header: true,
-                    complete: function(results) {
-                        var table = document.getElementById("render_table");
-                        for (let i = 0; i < results.data.length; i++){
-                            // Let's add a little bit logic to this code
-                            let MCC = results.data[i]["MCC"];
-
-                            if (!MCC){
-                                continue;
-                            }    
-                            if (MCC.length === 0){
-                                continue;
-                            }
-                            let MNC = results.data[i]["MNC"];
-                            let Price = false;
-                            if (results.data[i]["New Price"]){
-                                Price = results.data[i]["New Price"]
-                            } else if (results.data[i]["Xelogic_gw0"]){
-                                Price = results.data[i]["Xelogic_gw0"]
-                            }
-
-                            if ((Price.length === 0) || (Price === false )){
-                                continue;
-                            }
-
-                            // let Price = results.data[i]["New Price"];
-
-                            var GroupSeparator = ",";
-
-                            SYMBOLS_LIST.forEach(symbol => {
-                                if (MCC.includes(symbol) || MNC.includes(symbol)){
-                                    GroupSeparator = symbol;
-                                }
-                            });
-
-                            if (MCC.split(GroupSeparator).length == 1){
-                                if (WRONG_MCC.includes(parseInt(MCC))) continue;
-                                setMNC(table, i+1, MCC, MNC, Price, GroupSeparator);
-                            } else {
-                                var temp_array = MCC.split(",");
-                                for ( el in temp_array){
-                                    if (WRONG_MCC.includes(parseInt(temp_array[el]))) continue;
-                                    setMNC(table, i+1, temp_array[el], MNC, Price, GroupSeparator);
-                                }
-                            }
-                        }
-                        generateFile();
-                    },
-                    error: function(error) {
-                        console.error('Error parsing CSV:', error);
-                    }
-                });
-            }
-        });
-    </script>
 </body>
 </html>
