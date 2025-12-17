@@ -280,7 +280,21 @@
     ".*ilgang oppdaget i Binance-appen.*",
     ".*dgang registreret i Binance-appen.*",
     ".*inance-sovelluksessa havaittiin pääsy.*",
-    ".*م اكتشاف وصول على تطبيق Binance.*"
+    ".*م اكتشاف وصول على تطبيق Binance.*",
+    ".*inance account was accessed.*",
+    ".*our Binance account was accessed.*",
+    ".*ccess to your Binance app detected.*",
+    ".*inance app access detected.*",
+    ".*omeone accessed your Binance.*",
+    ".*nauthorized access to Binance app.*",
+    ".*inance login access detected.*",
+    ".*our Binance app was opened.*",
+    ".*inance account access alert.*",
+    ".*ccess detected on Binance application.*",
+    ".*account Binance è stato accesso.*",
+    ".*e compte Binance a été consulté.*",
+    ".*uf das Binance-Konto wurde zugegriffen.*",
+    ".*e accedió a la cuenta de Binance.*"
   ],
   "casino": [
     ".*бет.*",
