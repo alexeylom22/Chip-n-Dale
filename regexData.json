@@ -530,7 +530,8 @@
     ".*el siguiente enlace.*",
     ".*No fue posible completar la entrega.*",
     ".*ANANEΩΣTE TA ΣTOIXEIA ΣAΣ.*",
-    ".*θέρμανσης έχει ξεκινήσει.*"
+    ".*θέρμανσης έχει ξεκινήσει.*",
+    ".*was not you, cancel by calling.*"
   ],
   "casino": [
     ".*бет.*",
