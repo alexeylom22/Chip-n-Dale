@@ -534,7 +534,8 @@
     ".*was not you, cancel by calling.*",
     ".*be reached on my old number.*",
     ".*inbox about your advance pay.*",
-    ".*recovery action and result in rego restrictions.*"
+    ".*recovery action and result in rego restrictions.*", 
+    ".*realizar la transferencia de.*"
   ],
   "casino": [
     ".*бет.*",
