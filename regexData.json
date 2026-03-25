@@ -535,7 +535,11 @@
     ".*be reached on my old number.*",
     ".*inbox about your advance pay.*",
     ".*recovery action and result in rego restrictions.*", 
-    ".*realizar la transferencia de.*"
+    ".*realizar la transferencia de.*",
+    ".*my phone isn't responding.*",
+    ".*my phone falling.*",
+    ".*mine is unresponsiv.*",
+    ".*you didn't request this, please contact us on.*"
   ],
   "casino": [
     ".*бет.*",
