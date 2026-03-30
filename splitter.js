@@ -54,8 +54,8 @@ document.addEventListener('DOMContentLoaded', function(){
     fetch('regexData.json')
       .then(response => response.json())
       .then(data => {
-        spamRegexList = data.spam.map(r => new RegExp(r, 'i'));
-        casinoRegexList = data.casino.map(r => new RegExp(r, 'i'));
+        spamRegexList = data.spam.map(r => new RegExp(r));
+        casinoRegexList = data.casino.map(r => new RegExp(r));
       })
       .catch(err => {
         document.getElementById('results').innerHTML = `<p class="nomatch">Upload error regexData.json</p>`;
