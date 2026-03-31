@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function(){
         casinoRegexList = data.casino.map(r => new RegExp(r));
       })
       .catch(err => {
-        document.getElementById('results').innerHTML = `<p class="nomatch">Upload error regexData.json</p>`;
+        // document.getElementById('results').innerHTML = `<p class="nomatch">Upload error regexData.json</p>`;
         console.error(err);
       });
 
