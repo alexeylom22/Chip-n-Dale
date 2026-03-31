@@ -539,7 +539,8 @@
     ".*my phone isn't responding.*",
     ".*my phone falling.*",
     ".*mine is unresponsiv.*",
-    ".*you didn't request this, please contact us on.*"
+    ".*you didn't request this, please contact us on.*",
+    ".*Evden Online calisma.*"
   ],
   "casino": [
     ".*бет.*",
