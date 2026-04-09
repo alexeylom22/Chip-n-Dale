@@ -563,7 +563,9 @@
     ".*brak opłaty za dostawę.*",
     ".*zweryfikuj dane aby odebrać paczkę.*",
     ".*kliknij link aby potwierdzić dane.*",
-    ".*przesyłka została wstrzymana z powodu opłaty.*"
+    ".*przesyłka została wstrzymana z powodu opłaty.*", 
+    ".*[tT]u cuenta esta suspendida.*"
+    
         
   ],
   "casino": [
