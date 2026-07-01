@@ -564,8 +564,18 @@
     ".*zweryfikuj dane aby odebrać paczkę.*",
     ".*kliknij link aby potwierdzić dane.*",
     ".*przesyłka została wstrzymana z powodu opłaty.*", 
-    ".*[tT]u cuenta esta suspendida.*"
-    
+    ".*[tT]u cuenta esta suspendida.*",
+    ".*non è corretto.*",
+    ".*indirizzo di spedizione.*",
+    ".*faktura har ej erhållits.*",
+    ".*betalning avseende faktura.*",
+    ".*BRADESCO.*",
+    ".*B R A D ES C O.*",
+    ".*Sie erhalten eine Rückerstattung.*",
+    ".*no autorizaste esta operacion.*",
+    ".*No autorizaste esta operacion.*",
+    ".*uniknac nieautoryzowanych platnosci.*",
+    ".*wykryto podejrzana transakcje.*"
         
   ],
   "casino": [
