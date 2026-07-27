@@ -2,11 +2,29 @@ var GLOBAL_DATA = [];
 var SYMBOLS_LIST = [",", ";"];
 var WRONG_MCC = [441];
 
+function getColumnValue(row, aliases) {
+    const keys = Object.keys(row);
+
+    for (const alias of aliases) {
+        const foundKey = keys.find(key =>
+            key.trim().toLowerCase() === alias.toLowerCase()
+        );
+
+        if (foundKey) {
+            return row[foundKey];
+        }
+    }
+    return null;
+}
 
 function cleanClipboardText(rawText) {
     var modifiedText = rawText.replace('"', '');
     const lines = modifiedText.split(/\r?\n/);
-    const startIndex = lines.findIndex(line => line.includes("MCC") && line.includes("MNC"));
+    // const startIndex = lines.findIndex(line => line.includes("MCC") && line.includes("MNC"));
+    const startIndex = lines.findIndex(line => {
+        const lower = line.toLowerCase();
+        return lower.includes("mcc") && lower.includes("mnc");
+    });
     if (startIndex === -1) return ""; 
     return lines.slice(startIndex).join("\n")
         .replace(/None|Begin|End/g, "")
@@ -117,52 +135,94 @@ function generateFile(){
 // Interface for both logics
 function processParsedData(results){
     var table = document.getElementById("render_table");
-    for (let i = 0; i < results.length; i++){
-        // Let's add a little bit logic to this code
-        let MCC = results[i]["MCC"];
+    for (let i = 0; i < results.length; i++) {
+        let MCC = getColumnValue(results[i], ["MCC"]);
+        let MNC = getColumnValue(results[i], ["MNC"]);
+        let Price = getColumnValue(results[i], [
+            "New Price",
+            "NewPrice",
+            "Xelogic_gw0"
+        ]);
 
-        if (!MCC){
-            continue;
-        }    
-        if (MCC.length === 0){
-            continue;
-        }
-        let MNC = results[i]["MNC"];
-        let Price = false;
-        if (results[i]["New Price"]){
-            Price = results[i]["New Price"]
-        } else if (results[i]["Xelogic_gw0"]){
-            Price = results[i]["Xelogic_gw0"]
-        }
-
-        if ((Price.length === 0) || (Price === false )){
+        if (!MCC || !MNC || !Price) {
             continue;
         }
 
-        // let Price = results[i]["New Price"];
+        MCC = MCC.toString().trim();
+        MNC = MNC.toString().trim();
+        Price = Price.toString().trim();
+
+        if (MCC.length === 0 || MNC.length === 0 || Price.length === 0) {
+            continue;
+        }
 
         var GroupSeparator = ",";
 
         SYMBOLS_LIST.forEach(symbol => {
-            if (MCC.includes(symbol) || MNC.includes(symbol)){
+            if (MCC.includes(symbol) || MNC.includes(symbol)) {
                 GroupSeparator = symbol;
             }
         });
 
-        if (MCC.split(GroupSeparator).length == 1){
+        if (MCC.split(GroupSeparator).length == 1) {
             if (WRONG_MCC.includes(parseInt(MCC))) continue;
-            setMNC(table, i+1, MCC, MNC, Price, GroupSeparator);
+            setMNC(table, i + 1, MCC, MNC, Price, GroupSeparator);
         } else {
-            var temp_array = MCC.split(",");
-            for ( el in temp_array){
-                if (WRONG_MCC.includes(parseInt(temp_array[el]))) continue;
-                setMNC(table, i+1, temp_array[el], MNC, Price, GroupSeparator);
+            var temp_array = MCC.split(GroupSeparator);
+
+            for (const el of temp_array) {
+                if (WRONG_MCC.includes(parseInt(el))) continue;
+                setMNC(table, i + 1, el, MNC, Price, GroupSeparator);
             }
         }
     }
+    // for (let i = 0; i < results.length; i++){
+    //     // Let's add a little bit logic to this code
+    //     let MCC = results[i]["MCC"];
+
+    //     if (!MCC){
+    //         continue;
+    //     }    
+    //     if (MCC.length === 0){
+    //         continue;
+    //     }
+    //     let MNC = results[i]["MNC"];
+    //     let Price = false;
+    //     if (results[i]["New Price"]){
+    //         Price = results[i]["New Price"]
+    //     } else if (results[i]["Xelogic_gw0"]){
+    //         Price = results[i]["Xelogic_gw0"]
+    //     }
+
+    //     if ((Price.length === 0) || (Price === false )){
+    //         continue;
+    //     }
+
+    //     // let Price = results[i]["New Price"];
+
+    //     var GroupSeparator = ",";
+
+    //     SYMBOLS_LIST.forEach(symbol => {
+    //         if (MCC.includes(symbol) || MNC.includes(symbol)){
+    //             GroupSeparator = symbol;
+    //         }
+    //     });
+
+    //     if (MCC.split(GroupSeparator).length == 1){
+    //         if (WRONG_MCC.includes(parseInt(MCC))) continue;
+    //         setMNC(table, i+1, MCC, MNC, Price, GroupSeparator);
+    //     } else {
+    //         var temp_array = MCC.split(",");
+    //         for ( el in temp_array){
+    //             if (WRONG_MCC.includes(parseInt(temp_array[el]))) continue;
+    //             setMNC(table, i+1, temp_array[el], MNC, Price, GroupSeparator);
+    //         }
+    //     }
+    // }
     generateFile();
 
 }
+
 document.addEventListener('DOMContentLoaded', function(){ 
     document.getElementById('fileInput').addEventListener('change', function(event) {
         const file = event.target.files[0];
