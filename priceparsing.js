@@ -135,8 +135,16 @@ function generateFile(){
 // Interface for both logics
 function processParsedData(results){
     var table = document.getElementById("render_table");
-    for (let i = 0; i < results.length; i++) {
+    for (let i = 0; i < results.length; i++){
+        // Let's add a little bit logic to this code
         let MCC = getColumnValue(results[i], ["MCC"]);
+
+        if (!MCC){
+            continue;
+        }    
+        if (MCC.length === 0){
+            continue;
+        }
         let MNC = getColumnValue(results[i], ["MNC"]);
         let Price = getColumnValue(results[i], [
             "New Price",
@@ -144,35 +152,28 @@ function processParsedData(results){
             "Xelogic_gw0"
         ]);
 
-        if (!MCC || !MNC || !Price) {
+        if ((Price.length === 0) || (Price === false )){
             continue;
         }
 
-        MCC = MCC.toString().trim();
-        MNC = MNC.toString().trim();
-        Price = Price.toString().trim();
-
-        if (MCC.length === 0 || MNC.length === 0 || Price.length === 0) {
-            continue;
-        }
+        // let Price = results[i]["New Price"];
 
         var GroupSeparator = ",";
 
         SYMBOLS_LIST.forEach(symbol => {
-            if (MCC.includes(symbol) || MNC.includes(symbol)) {
+            if (MCC.includes(symbol) || MNC.includes(symbol)){
                 GroupSeparator = symbol;
             }
         });
 
-        if (MCC.split(GroupSeparator).length == 1) {
+        if (MCC.split(GroupSeparator).length == 1){
             if (WRONG_MCC.includes(parseInt(MCC))) continue;
-            setMNC(table, i + 1, MCC, MNC, Price, GroupSeparator);
+            setMNC(table, i+1, MCC, MNC, Price, GroupSeparator);
         } else {
-            var temp_array = MCC.split(GroupSeparator);
-
-            for (const el of temp_array) {
-                if (WRONG_MCC.includes(parseInt(el))) continue;
-                setMNC(table, i + 1, el, MNC, Price, GroupSeparator);
+            var temp_array = MCC.split(",");
+            for ( el in temp_array){
+                if (WRONG_MCC.includes(parseInt(temp_array[el]))) continue;
+                setMNC(table, i+1, temp_array[el], MNC, Price, GroupSeparator);
             }
         }
     }
