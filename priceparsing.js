@@ -2,20 +2,6 @@ var GLOBAL_DATA = [];
 var SYMBOLS_LIST = [",", ";"];
 var WRONG_MCC = [441];
 
-function getColumnValue(row, aliases) {
-    const keys = Object.keys(row);
-
-    for (const alias of aliases) {
-        const foundKey = keys.find(key =>
-            key.trim().toLowerCase() === alias.toLowerCase()
-        );
-
-        if (foundKey) {
-            return row[foundKey];
-        }
-    }
-    return null;
-}
 
 function cleanClipboardText(rawText) {
     var modifiedText = rawText.replace('"', '');
@@ -50,7 +36,8 @@ class CSVRow{
 }
 
 function setMNC(table, order, MCC, MNC, Price, groupSeparator){
-    if (MNC.split(groupSeparator).length == 1){
+    let parsedMcc = parseInt(MCC);
+    if (!MNC || MNC.length === 0){
         var row = table.insertRow(-1);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
@@ -58,18 +45,37 @@ function setMNC(table, order, MCC, MNC, Price, groupSeparator){
         var cell4 = row.insertCell(3);
 
         cell1.innerHTML = order;
-        cell2.innerHTML = MCC;
-        cell3.innerHTML = MNC;
+        cell2.innerHTML = parsedMcc;
+        cell3.innerHTML = "";
         cell4.innerHTML = Price;
 
-        var object_row = new CSVRow(parseInt(MCC), parseInt(MNC), Price);
+        var object_row = new CSVRow(parsedMcc, "", Price);
+        GLOBAL_DATA.push(object_row);
+        return;
+    }
+
+    if (MNC.split(groupSeparator).length == 1){
+        let parsedMnc = parseInt(MNC);
+
+        var row = table.insertRow(-1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+
+        cell1.innerHTML = order;
+        cell2.innerHTML = parsedMcc;
+        cell3.innerHTML = parsedMnc;
+        cell4.innerHTML = Price;
+
+        var object_row = new CSVRow(parsedMcc, parsedMnc, Price);
         GLOBAL_DATA.push(object_row);
 
     } else {
         var temp_array = MNC.split(groupSeparator);
         console.log(temp_array);
         for ( el in temp_array){
-            MNC = parseInt(temp_array[el]);
+            let parsedMnc = parseInt(temp_array[el]);
             var row = table.insertRow(-1);
             var cell1 = row.insertCell(0);
             var cell2 = row.insertCell(1);
@@ -77,13 +83,30 @@ function setMNC(table, order, MCC, MNC, Price, groupSeparator){
             var cell4 = row.insertCell(3);
 
             cell1.innerHTML = order;
-            cell2.innerHTML = MCC;
-            cell3.innerHTML = MNC;
+            cell2.innerHTML = parsedMcc;
+            cell3.innerHTML = parsedMnc;
             cell4.innerHTML = Price;
-            var object_row = new CSVRow(parseInt(MCC), parseInt(MNC), Price);
+            var object_row = new CSVRow(parsedMcc, parsedMnc, Price);
             GLOBAL_DATA.push(object_row);
-
         }
+        // var temp_array = MNC.split(groupSeparator);
+        // console.log(temp_array);
+        // for ( el in temp_array){
+        //     MNC = parseInt(temp_array[el]);
+        //     var row = table.insertRow(-1);
+        //     var cell1 = row.insertCell(0);
+        //     var cell2 = row.insertCell(1);
+        //     var cell3 = row.insertCell(2);
+        //     var cell4 = row.insertCell(3);
+
+        //     cell1.innerHTML = order;
+        //     cell2.innerHTML = parsedMCC;
+        //     cell3.innerHTML = MNC;
+        //     cell4.innerHTML = Price;
+        //     var object_row = new CSVRow(parsedMcc, parseInt(MNC), Price);
+        //     GLOBAL_DATA.push(object_row);
+
+        // }
     }
 }
 
@@ -138,7 +161,7 @@ function processParsedData(results){
     for (let i = 0; i < results.length; i++){
         // Let's add a little bit logic to this code
         let MCC = getColumnValue(results[i], ["MCC"]);
-
+        
         if (!MCC){
             continue;
         }    
@@ -146,12 +169,9 @@ function processParsedData(results){
             continue;
         }
         let MNC = getColumnValue(results[i], ["MNC"]);
-        let Price = getColumnValue(results[i], [
-            "New Price",
-            "NewPrice",
-            "Xelogic_gw0"
-        ]);
-
+        let Price = getColumnValue(results[i], ["New Price", "NewPrice", "Xelogic_gw0"]);
+        if (!Price) Price = false;
+        console.log('MCC:', MCC, 'MNC:', MNC, 'Price:', Price);
         if ((Price.length === 0) || (Price === false )){
             continue;
         }
@@ -177,51 +197,21 @@ function processParsedData(results){
             }
         }
     }
-    // for (let i = 0; i < results.length; i++){
-    //     // Let's add a little bit logic to this code
-    //     let MCC = results[i]["MCC"];
-
-    //     if (!MCC){
-    //         continue;
-    //     }    
-    //     if (MCC.length === 0){
-    //         continue;
-    //     }
-    //     let MNC = results[i]["MNC"];
-    //     let Price = false;
-    //     if (results[i]["New Price"]){
-    //         Price = results[i]["New Price"]
-    //     } else if (results[i]["Xelogic_gw0"]){
-    //         Price = results[i]["Xelogic_gw0"]
-    //     }
-
-    //     if ((Price.length === 0) || (Price === false )){
-    //         continue;
-    //     }
-
-    //     // let Price = results[i]["New Price"];
-
-    //     var GroupSeparator = ",";
-
-    //     SYMBOLS_LIST.forEach(symbol => {
-    //         if (MCC.includes(symbol) || MNC.includes(symbol)){
-    //             GroupSeparator = symbol;
-    //         }
-    //     });
-
-    //     if (MCC.split(GroupSeparator).length == 1){
-    //         if (WRONG_MCC.includes(parseInt(MCC))) continue;
-    //         setMNC(table, i+1, MCC, MNC, Price, GroupSeparator);
-    //     } else {
-    //         var temp_array = MCC.split(",");
-    //         for ( el in temp_array){
-    //             if (WRONG_MCC.includes(parseInt(temp_array[el]))) continue;
-    //             setMNC(table, i+1, temp_array[el], MNC, Price, GroupSeparator);
-    //         }
-    //     }
-    // }
     generateFile();
 
+}
+
+function getColumnValue(row, aliases) {
+    const keys = Object.keys(row);
+    for (const alias of aliases) {
+        const foundKey = keys.find(key =>
+            key.trim().toLowerCase() === alias.toLowerCase()
+        );
+        if (foundKey) {
+            return row[foundKey];
+        }
+    }
+    return null;
 }
 
 document.addEventListener('DOMContentLoaded', function(){ 
